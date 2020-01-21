@@ -36,8 +36,22 @@ typedef struct
 	float color[3];
 } Vertex;
 
-Vertex vertex[6];
-GLubyte triangles[6];
+Vertex vertex[8];
+GLubyte triangles[36]
+{
+	1, 5, 6,
+	6, 2, 1,
+	4, 0, 3,
+	3, 7, 4,
+	3, 2, 6,
+	6, 7, 3,
+	0, 4, 5,
+	5, 1, 0,
+	0, 1, 2,
+	2, 3, 0,
+	4, 7, 6,
+	6, 5, 4
+};
 
 /* Variable to hold the VBO identifier */
 GLuint vbo[1];
@@ -51,7 +65,9 @@ void Game::initialize()
 	glLoadIdentity();
 	gluPerspective(45.0, window.getSize().x / window.getSize().y, 1.0, 500.0);
 	glMatrixMode(GL_MODELVIEW);
+
 	glTranslatef(0.0f, 0.0f, -10.0f);
+	glEnable(GL_CULL_FACE);
 
 	glewInit();
 
@@ -83,14 +99,14 @@ void Game::initialize()
 	vertex[5].coordinate[1] = -1.0f;
 	vertex[5].coordinate[2] = -1.0f;
 
-	/*
+	
 	vertex[6].coordinate[0] = 1.0f;
 	vertex[6].coordinate[1] = 1.0f;
 	vertex[6].coordinate[2] = -1.0f;
 
 	vertex[7].coordinate[0] = -1.0f;
 	vertex[7].coordinate[1] = 1.0f;
-	vertex[7].coordinate[2] = -1.0f;*/
+	vertex[7].coordinate[2] = -1.0f;
 	
 	// Colours
 	vertex[0].color[0] = 0.1f;
@@ -116,7 +132,7 @@ void Game::initialize()
 	vertex[5].color[0] = 0.6f;
 	vertex[5].color[1] = 1.0f;
 	vertex[5].color[2] = 0.0f;
-	/*
+	
 	vertex[4].color[0] = 0.4f;
 	vertex[4].color[1] = 1.0f;
 	vertex[4].color[2] = 0.0f;
@@ -131,28 +147,7 @@ void Game::initialize()
 
 	vertex[7].color[0] = 0.5f;
 	vertex[7].color[1] = 1.0f;
-	vertex[7].color[2] = 0.0f;*/
-
-	triangles[0] = 0;   triangles[1] = 1;   triangles[2] = 2;
-	triangles[3] = 2;   triangles[4] = 3;   triangles[5] = 0;
-
-	/*triangles[0] = 1;   triangles[1] = 5;   triangles[2] = 6;
-	triangles[3] = 6;   triangles[4] = 2;   triangles[5] = 1;
-	triangles[6] = 4;   triangles[7] = 0;   triangles[8] = 3;
-	triangles[9] = 3;   triangles[10] = 7;   triangles[11] = 4;
-	triangles[12] = 3;   triangles[13] = 2;   triangles[14] = 6;
-	triangles[15] = 6;   triangles[16] = 7;   triangles[17] = 3;
-	triangles[18] = 0;   triangles[19] = 4;   triangles[20] = 5;
-	triangles[21] = 5;   triangles[22] = 1;   triangles[23] = 0;
-	triangles[24] = 0;   triangles[25] = 1;   triangles[26] = 2;
-	triangles[27] = 2;   triangles[28] = 3;   triangles[29] = 0;
-	triangles[30] = 4;   triangles[31] = 7;   triangles[32] = 6;
-	triangles[33] = 6;   triangles[34] = 5;   triangles[35] = 4;*/
-
-	/*for (int i = 0; i < 8; i++)
-	{
-		vertex[i].coordinate[2] -= 5;
-	}*/
+	vertex[7].color[2] = 0.0f;
 
 	/* Create a new VBO using VBO id */
 	glGenBuffers(1, vbo);
@@ -161,12 +156,12 @@ void Game::initialize()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 
 	/* Upload vertex data to GPU */
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4, vertex, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 36, vertex, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glGenBuffers(1, &index);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 6, triangles, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * 36, triangles, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
@@ -178,7 +173,25 @@ void Game::update()
 	{
 		clock.restart();
 
-		
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+		{
+			//glRotatef(0.5f, 1, 0, 0);
+
+			for (int i = 0; i < 8; i++)
+			{
+				cube::Vector3f vector{ vertex[i].coordinate[0], vertex[i].coordinate[1], vertex[i].coordinate[2] };
+
+				vector = cube::Matrix3f::RotationX(-0.6f) * vector;
+
+				vertex[i].coordinate[0] = vector.x;
+				vertex[i].coordinate[1] = vector.y;
+				vertex[i].coordinate[2] = vector.z;
+			}
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+		{
+			glRotatef(0.5f, 0, 1, 0);
+		}
 	}
 }
 
@@ -193,7 +206,7 @@ void Game::render()
 
 	/*	As the data positions will be updated by the this program on the
 		CPU bind the updated data to the GPU for drawing	*/
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 6, vertex, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 36, vertex, GL_STATIC_DRAW);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -204,7 +217,7 @@ void Game::render()
 	/*	Draw Triangle from VBO	(set where to start from as VBO can contain 
 		model compoents that are and are not to be drawn )	*/
 	glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (char*)NULL + 0);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, (char*)NULL + 0);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (char*)NULL + 0);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);

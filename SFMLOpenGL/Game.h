@@ -4,12 +4,11 @@
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 
-#include <Vector3.h>
-#include <Matrix3.h>
+#include <Vector3f.h>
+#include <Matrix3f.h>
 
 using namespace std;
 using namespace sf;
-using namespace gpp;
 
 class Game
 {
