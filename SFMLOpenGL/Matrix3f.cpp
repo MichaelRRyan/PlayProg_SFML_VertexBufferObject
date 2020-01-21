@@ -110,8 +110,8 @@ Matrix3f Matrix3f::operator*(Matrix3f M)
 Vector3f Matrix3f::operator*(Vector3f V1)
 {// An overloaded operator * to return the  product of the matrix by a vector
 	return { A11 * V1.x + A12 * V1.y + A13 * V1.z,
-		A21 * V1.x + A22 * V1.y + A23 * V1.z,
-		A31 * V1.x + A32 * V1.y + A33 * V1.z };
+			 A21 * V1.x + A22 * V1.y + A23 * V1.z,
+			 A31 * V1.x + A32 * V1.y + A33 * V1.z };
 }
 
 Vector3f cube::operator*(Vector3f V1, Matrix3f M1)

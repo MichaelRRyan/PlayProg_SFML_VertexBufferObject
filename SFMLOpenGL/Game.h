@@ -27,5 +27,7 @@ private:
 	Clock clock;
 	Time elapsed;
 
-	float rotationAngle = 0.0f;
+	cube::Vector3f m_rotations;
+	cube::Vector3f m_translations;
+	float m_scale;
 };

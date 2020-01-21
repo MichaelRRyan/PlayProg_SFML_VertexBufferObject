@@ -2,7 +2,11 @@
 
 static bool flip;
 
-Game::Game() : window(VideoMode(800, 600), "OpenGL Cube VBO")
+Game::Game() : 
+	window(VideoMode(800, 600), "OpenGL Cube VBO"),
+	m_rotations{ 0.0f, 0.0f, 0.0f },
+	m_translations{ 0.0f, 0.0f, 0.0f },
+	m_scale{ 100.0f }
 {
 }
 
@@ -36,7 +40,10 @@ typedef struct
 	float color[3];
 } Vertex;
 
-Vertex vertex[8];
+Vertex baseVertices[8];
+
+Vertex vertices[8];
+
 GLubyte triangles[36]
 {
 	1, 5, 6,
@@ -74,80 +81,89 @@ void Game::initialize()
 	/* Vertices counter-clockwise winding */
 
 	// Coordinates
-	vertex[0].coordinate[0] = -1.0f;
-	vertex[0].coordinate[1] = -1.0f;
-	vertex[0].coordinate[2] = 1.0f;
+	baseVertices[0].coordinate[0] = -1.0f;
+	baseVertices[0].coordinate[1] = -1.0f;
+	baseVertices[0].coordinate[2] = 1.0f;
 
-	vertex[1].coordinate[0] = 1.0f;
-	vertex[1].coordinate[1] = -1.0f;
-	vertex[1].coordinate[2] = 1.0f;
+	baseVertices[1].coordinate[0] = 1.0f;
+	baseVertices[1].coordinate[1] = -1.0f;
+	baseVertices[1].coordinate[2] = 1.0f;
 
-	vertex[2].coordinate[0] = 1.0f;
-	vertex[2].coordinate[1] = 1.0f;
-	vertex[2].coordinate[2] = 1.0f;
+	baseVertices[2].coordinate[0] = 1.0f;
+	baseVertices[2].coordinate[1] = 1.0f;
+	baseVertices[2].coordinate[2] = 1.0f;
 
-	vertex[3].coordinate[0] = -1.0f;
-	vertex[3].coordinate[1] = 1.0f;
-	vertex[3].coordinate[2] = 1.0f;
-
-	
-	vertex[4].coordinate[0] = -1.0f;
-	vertex[4].coordinate[1] = -1.0f;
-	vertex[4].coordinate[2] = -1.0f;
-
-	vertex[5].coordinate[0] = 1.0f;
-	vertex[5].coordinate[1] = -1.0f;
-	vertex[5].coordinate[2] = -1.0f;
+	baseVertices[3].coordinate[0] = -1.0f;
+	baseVertices[3].coordinate[1] = 1.0f;
+	baseVertices[3].coordinate[2] = 1.0f;
 
 	
-	vertex[6].coordinate[0] = 1.0f;
-	vertex[6].coordinate[1] = 1.0f;
-	vertex[6].coordinate[2] = -1.0f;
+	baseVertices[4].coordinate[0] = -1.0f;
+	baseVertices[4].coordinate[1] = -1.0f;
+	baseVertices[4].coordinate[2] = -1.0f;
 
-	vertex[7].coordinate[0] = -1.0f;
-	vertex[7].coordinate[1] = 1.0f;
-	vertex[7].coordinate[2] = -1.0f;
+	baseVertices[5].coordinate[0] = 1.0f;
+	baseVertices[5].coordinate[1] = -1.0f;
+	baseVertices[5].coordinate[2] = -1.0f;
+
+	
+	baseVertices[6].coordinate[0] = 1.0f;
+	baseVertices[6].coordinate[1] = 1.0f;
+	baseVertices[6].coordinate[2] = -1.0f;
+
+	baseVertices[7].coordinate[0] = -1.0f;
+	baseVertices[7].coordinate[1] = 1.0f;
+	baseVertices[7].coordinate[2] = -1.0f;
 	
 	// Colours
-	vertex[0].color[0] = 0.1f;
-	vertex[0].color[1] = 1.0f;
-	vertex[0].color[2] = 0.0f;
+	baseVertices[0].color[0] = 1.0f;
+	baseVertices[0].color[1] = 0.0f;
+	baseVertices[0].color[2] = 0.0f;
 
-	vertex[1].color[0] = 0.2f;
-	vertex[1].color[1] = 1.0f;
-	vertex[1].color[2] = 0.0f;
+	baseVertices[1].color[0] = 0.0f;
+	baseVertices[1].color[1] = 1.0f;
+	baseVertices[1].color[2] = 0.0f;
 
-	vertex[2].color[0] = 0.3f;
-	vertex[2].color[1] = 1.0f;
-	vertex[2].color[2] = 0.0f;
+	baseVertices[2].color[0] = 0.0f;
+	baseVertices[2].color[1] = 0.0f;
+	baseVertices[2].color[2] = 1.0f;
 
-	vertex[3].color[0] = 0.4f;
-	vertex[3].color[1] = 1.0f;
-	vertex[3].color[2] = 0.0f;
+	baseVertices[3].color[0] = 0.4f;
+	baseVertices[3].color[1] = 1.0f;
+	baseVertices[3].color[2] = 0.0f;
 
-	vertex[4].color[0] = 0.5f;
-	vertex[4].color[1] = 1.0f;
-	vertex[4].color[2] = 0.0f;
+	baseVertices[4].color[0] = 0.5f;
+	baseVertices[4].color[1] = 1.0f;
+	baseVertices[4].color[2] = 0.0f;
 
-	vertex[5].color[0] = 0.6f;
-	vertex[5].color[1] = 1.0f;
-	vertex[5].color[2] = 0.0f;
+	baseVertices[5].color[0] = 0.6f;
+	baseVertices[5].color[1] = 1.0f;
+	baseVertices[5].color[2] = 0.0f;
 	
-	vertex[4].color[0] = 0.4f;
-	vertex[4].color[1] = 1.0f;
-	vertex[4].color[2] = 0.0f;
+	baseVertices[4].color[0] = 0.4f;
+	baseVertices[4].color[1] = 1.0f;
+	baseVertices[4].color[2] = 0.0f;
 
-	vertex[5].color[0] = 0.5f;
-	vertex[5].color[1] = 1.0f;
-	vertex[5].color[2] = 0.0f;
+	baseVertices[5].color[0] = 0.5f;
+	baseVertices[5].color[1] = 1.0f;
+	baseVertices[5].color[2] = 0.0f;
 
-	vertex[6].color[0] = 0.6f;
-	vertex[6].color[1] = 1.0f;
-	vertex[6].color[2] = 0.0f;
+	baseVertices[6].color[0] = 0.6f;
+	baseVertices[6].color[1] = 1.0f;
+	baseVertices[6].color[2] = 0.0f;
 
-	vertex[7].color[0] = 0.5f;
-	vertex[7].color[1] = 1.0f;
-	vertex[7].color[2] = 0.0f;
+	baseVertices[7].color[0] = 0.5f;
+	baseVertices[7].color[1] = 1.0f;
+	baseVertices[7].color[2] = 0.0f;
+
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			vertices[i].coordinate[j] = baseVertices[i].coordinate[j];
+			vertices[i].color[j] = baseVertices[i].color[j];
+		}
+	}
 
 	/* Create a new VBO using VBO id */
 	glGenBuffers(1, vbo);
@@ -156,7 +172,7 @@ void Game::initialize()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 
 	/* Upload vertex data to GPU */
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 36, vertex, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 36, vertices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	glGenBuffers(1, &index);
@@ -173,24 +189,67 @@ void Game::update()
 	{
 		clock.restart();
 
+		// Keyboard Input
+		// Scale
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+			m_scale += 10.0f;
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+			m_scale -= 10.0f;
+
+		// Rotations
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
-		{
-			//glRotatef(0.5f, 1, 0, 0);
+			m_rotations.x += 0.6f;
 
-			for (int i = 0; i < 8; i++)
-			{
-				cube::Vector3f vector{ vertex[i].coordinate[0], vertex[i].coordinate[1], vertex[i].coordinate[2] };
-
-				vector = cube::Matrix3f::RotationX(-0.6f) * vector;
-
-				vertex[i].coordinate[0] = vector.x;
-				vertex[i].coordinate[1] = vector.y;
-				vertex[i].coordinate[2] = vector.z;
-			}
-		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
+			m_rotations.y += 0.6f;
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+			m_rotations.z += 0.6f;
+
+		// Translations
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			m_translations.x += 0.2f;
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			m_translations.x -= 0.2f;
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			m_translations.y += 0.2f;
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			m_translations.y -= 0.2f;
+
+		// Create an identity matrix
+		cube::Matrix3f transformationMatrix{ 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
+
+		// Apply the tranformations to the matrix
+		transformationMatrix = cube::Matrix3f::Scale3D(m_scale) * transformationMatrix;
+
+		transformationMatrix = cube::Matrix3f::RotationX(m_rotations.x) * transformationMatrix;
+		transformationMatrix = cube::Matrix3f::RotationY(m_rotations.y) * transformationMatrix;
+		transformationMatrix = cube::Matrix3f::RotationZ(m_rotations.z) * transformationMatrix;
+
+		// Apply the rotations and scale to the points
+		for (int i = 0; i < 8; i++)
 		{
-			glRotatef(0.5f, 0, 1, 0);
+			cube::Vector3f vector{ baseVertices[i].coordinate[0], baseVertices[i].coordinate[1], baseVertices[i].coordinate[2] };
+
+			vector = transformationMatrix * vector;
+
+			vertices[i].coordinate[0] = vector.x;
+			vertices[i].coordinate[1] = vector.y;
+			vertices[i].coordinate[2] = vector.z;
+		}
+
+		for (int i = 0; i < 8; i++)
+		{
+			cube::Vector3f vector{ vertices[i].coordinate[0], vertices[i].coordinate[1], 1.0f };
+
+			vector = cube::Matrix3f::Translate(m_translations.x , m_translations.y) * vector;
+
+			vertices[i].coordinate[0] = vector.x;
+			vertices[i].coordinate[1] = vector.y;
 		}
 	}
 }
@@ -206,13 +265,13 @@ void Game::render()
 
 	/*	As the data positions will be updated by the this program on the
 		CPU bind the updated data to the GPU for drawing	*/
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 36, vertex, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 36, vertices, GL_STATIC_DRAW);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 
 
-	glColorPointer(3, GL_FLOAT, sizeof(Vertex), (char*)NULL + 0);
+	glColorPointer(3, GL_FLOAT, sizeof(Vertex), (char*)NULL + 12);
 
 	/*	Draw Triangle from VBO	(set where to start from as VBO can contain 
 		model compoents that are and are not to be drawn )	*/
