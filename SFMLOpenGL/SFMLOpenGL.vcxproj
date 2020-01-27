@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SFML_SDK)\include;$(GLEW_SDK)\include;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(GLEW_SDK)\include;$(SFML_SDK)\include;$(ProjectDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SFML_SDK)\lib;$(GLEW_SDK)\lib\Release\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -128,33 +128,33 @@ void Game::initialize()
 	baseVertices[2].color[1] = 0.0f;
 	baseVertices[2].color[2] = 1.0f;
 
-	baseVertices[3].color[0] = 0.4f;
+	baseVertices[3].color[0] = 1.0f;
 	baseVertices[3].color[1] = 1.0f;
 	baseVertices[3].color[2] = 0.0f;
 
-	baseVertices[4].color[0] = 0.5f;
-	baseVertices[4].color[1] = 1.0f;
-	baseVertices[4].color[2] = 0.0f;
+	baseVertices[4].color[0] = 1.0f;
+	baseVertices[4].color[1] = 0.0f;
+	baseVertices[4].color[2] = 1.0f;
 
-	baseVertices[5].color[0] = 0.6f;
+	baseVertices[5].color[0] = 0.0f;
 	baseVertices[5].color[1] = 1.0f;
-	baseVertices[5].color[2] = 0.0f;
+	baseVertices[5].color[2] = 1.0f;
 	
-	baseVertices[4].color[0] = 0.4f;
-	baseVertices[4].color[1] = 1.0f;
-	baseVertices[4].color[2] = 0.0f;
+	baseVertices[4].color[0] = 0.5f;
+	baseVertices[4].color[1] = 0.0f;
+	baseVertices[4].color[2] = 0.5f;
 
 	baseVertices[5].color[0] = 0.5f;
-	baseVertices[5].color[1] = 1.0f;
+	baseVertices[5].color[1] = 0.5f;
 	baseVertices[5].color[2] = 0.0f;
 
-	baseVertices[6].color[0] = 0.6f;
-	baseVertices[6].color[1] = 1.0f;
-	baseVertices[6].color[2] = 0.0f;
+	baseVertices[6].color[0] = 0.0f;
+	baseVertices[6].color[1] = 0.5f;
+	baseVertices[6].color[2] = 0.5f;
 
 	baseVertices[7].color[0] = 0.5f;
-	baseVertices[7].color[1] = 1.0f;
-	baseVertices[7].color[2] = 0.0f;
+	baseVertices[7].color[1] = 0.5f;
+	baseVertices[7].color[2] = 0.5f;
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -271,12 +271,12 @@ void Game::render()
 	glEnableClientState(GL_COLOR_ARRAY);
 
 
-	glColorPointer(3, GL_FLOAT, sizeof(Vertex), (char*)NULL + 12);
+	glColorPointer(3, GL_FLOAT, sizeof(Vertex), (float*)NULL + 3);
 
 	/*	Draw Triangle from VBO	(set where to start from as VBO can contain 
 		model compoents that are and are not to be drawn )	*/
-	glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (char*)NULL + 0);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (char*)NULL + 0);
+	glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (float*)NULL + 0);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, (float*)NULL + 0);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
